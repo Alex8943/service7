@@ -26,21 +26,34 @@ export async function deleteReview(id: any) {
         if (!review) {
             console.log("Review does not exist");
             return { message: "Review does not exist" };
+        }else if(review.isBlocked === true){
+            console.log("Review is already soft deleted");
+            return { message: "Review is already soft deleted" };
         }
+
 
         console.log("Review exists:", review);
 
-        // Step 2: Send a RabbitMQ message to soft delete the review
-        const message = { reviewId: id };
+        // Step 2: Update the review's `isBlocked` field to `true`
+        await Reviews.update(
+            { isBlocked: true },
+            { where: { id } }
+        );
+
+        console.log(`Review with ID: ${id} has been soft deleted (isBlocked set to true).`);
+
+        // Step 3: Publish a message to RabbitMQ for logging or additional downstream processing
+        const message = { reviewId: id, isBlocked: true };
         await publishToQueue("delete-review-service", message); // Queue name for delete messages
 
         console.log(`Message sent to delete-review-service queue for review ID: ${id}`);
-        return { message: `Soft delete process initiated for review ID: ${id}` };
+        return { message: `Soft delete process completed for review ID: ${id}` };
     } catch (error) {
         console.error("Error during review soft delete process:", error);
         throw error;
     }
 }
+
 
 
 
