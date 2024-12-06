@@ -37,7 +37,7 @@ export async function deleteReview(id: any) {
         // Step 2: Update the review's `isBlocked` field to `true`
         await Reviews.update(
             { isBlocked: true },
-            { where: { id } }
+            { where: { id: id} }
         );
 
         console.log(`Review with ID: ${id} has been soft deleted (isBlocked set to true).`);
