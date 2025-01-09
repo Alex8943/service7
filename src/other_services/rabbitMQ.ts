@@ -7,6 +7,7 @@ dotenv.config();
 const LOCAL_RABBITMQ_URL = process.env.rabbitmq_url || "amqp://localhost";
 let channel: any;
 
+
 // Function to create or reuse a RabbitMQ channel
 export async function createChannel() {
     if (channel) return channel;

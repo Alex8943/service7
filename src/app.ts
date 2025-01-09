@@ -2,13 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import logger from './other_services/winstonLogger';
 import reviewRouter from './routes/reviewRouter';
+import { testDBConnection } from './db_service/db_connection';
 
 const app = express();
 app.use(cors());
 
 app.use(express.json()); // for parsing application/json
 
-//testDBConnection();
+testDBConnection();
 //createBackup();
 
 app.use(reviewRouter);
